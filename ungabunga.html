@@ -41,7 +41,9 @@ addEventListener('keyup',e=>{keys[e.code]=false;});
 let logy=0;let logx=0
 const platformart=new Image();
 platformart.src='art/Log.png'
-const platform={x:logx,y:logy,w:275.2,h:114.4}
+const platform={x:logx,y:logy,w:275.2,h:114.4, speed: 5}
+
+
 
 function logFall(){logx=(Math.floor()*(Math.random()*1201));logy=0;
 if(logy<625){logy=logy+3.125}else if(logy>625){logy=0;logx=(Math.floor()*(Math.random()*1201));logy=0;}
@@ -58,12 +60,6 @@ function gravity(){froop.y=froop.y+6.25;if(froop.y>625){froop.y=625}
     if(froop.y<0){froop.y=0}
     requestAnimationFrame(gravity)}gravity();
 
-    if (froop.y<-625){froop.y=-625}
-
-    then(
-       window.location.href ="ungabunga.html"; 
-    )
-
 function images(){ctx.clearRect(0,0,canvas.width,canvas.height);
   if(platformart.complete){ctx.drawImage(platformart,platform.x,platform.y,platform.w,platform.h)}
   if(playerart.complete){ctx.drawImage(playerart,froop.x,froop.y,froop.w,froop.h);}
@@ -75,6 +71,7 @@ function images(){ctx.clearRect(0,0,canvas.width,canvas.height);
 <audio controls loop src="audio/ost1.wav"></audio>
 
 </html>
+
 
 
 
