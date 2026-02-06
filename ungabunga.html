@@ -28,8 +28,8 @@ dedart=new Image();
 dedart.src='art/sob.png'
 //player
 const playerart=new Image();
-playerart.src='art/froop_fly.png';
-const froop={x:600,y:400,w:144,h:152};
+playerart.src='art/froop_idle.png';
+const froop={x:50,y:50,w:144,h:152};
 
 //keys setup
 const keys={};
@@ -48,23 +48,20 @@ if(logy<625){logy=logy+3.125}else if(logy>625){logy=0;logx=(Math.floor()*(Math.r
 requestAnimationFrame(logFall)
 }logFall()
 
-function move(){if(keys['KeyW']){froop.y=froop.y-12}
-if(keys['KeyA']){froop.x=froop.x-12}
-if(keys['KeyD']){froop.x=froop.x+12}
-if(froop.x<0){froop.x=0}if(froop.x>1200){froop.x=1200}
-requestAnimationFrame(move)}move()
+function gravity(){
+    if(keys['Space']){froop.y=froop.y-12;playerart.src='art/froop_up.png';}
 
-function gravity(){froop.y=froop.y+6.25;if(froop.y>625){froop.y=625}
+    froop.y=froop.y+6.25;if(froop.y>625){froop.y=625}
     if(froop.y<0){froop.y=0}
     requestAnimationFrame(gravity)}gravity()
 
 function images(){ctx.clearRect(0,0,canvas.width,canvas.height);
   if(platformart.complete){ctx.drawImage(platformart,platform.x,platform.y,platform.w,platform.h)}
   if(playerart.complete){ctx.drawImage(playerart,froop.x,froop.y,froop.w,froop.h);}
-  if(dedart.complete&&ded==1){ctx.drawImage(dedart,0,0,919,919)}
+  //if(dedart.complete&&ded==1){ctx.drawImage(dedart,0,0,919,919)}
   requestAnimationFrame(images);}images();
 </script>
 </body>
-<br><br><br>
-<audio controls loop src="audio/ost1.wav"></audio>
+<br><br><br><br><br><br><br><br><br><br>
+<audio controls loop src="ost1.wav"></audio>
 </html>
