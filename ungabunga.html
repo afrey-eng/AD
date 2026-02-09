@@ -7,6 +7,7 @@
     <title>Froop Jump</title>
 </head>
 <body bgcolor="black">
+  <p style="color: antiquewhite;" id="timerDisplay">00:00:00</p>
 <canvas id="game"></canvas>
 <script>
 // no touchy!
@@ -14,7 +15,7 @@ const canvas=document.getElementById('game');
 const ctx=canvas.getContext('2d');
 let DPR=Math.max(1,window.devicePixelRatio||1);
 
-function resize(){
+function resize() {
   canvas.width=innerWidth*DPR;
   canvas.height=innerHeight*DPR;
   canvas.style.width=innerWidth+'px';
@@ -24,10 +25,8 @@ addEventListener('resize',resize);
 resize();
 
 let ded=0
-dedsfx=new Audio();
-dedsfx.src='audio/DedSfx.mp3'
 dedart=new Image();
-dedart.src='art/froop_ded.png'
+dedart.src='art/sob.png'
 //player
 const playerart=new Image();
 playerart.src='art/froop_fly.png';
@@ -39,53 +38,117 @@ addEventListener('keydown',e=>{keys[e.code]=true;
   if(e.code==='Space') e.preventDefault();});
 addEventListener('keyup',e=>{keys[e.code]=false;});
 
-const platformart=new Image();
-platformart.src='art/Log.png'
-const platform={x:500,y:0,w:275.2,h:114.4}
-const log2={x:500,y:0,w:275.2,h:114.4}
-const log3={x:500,y:0,w:275.2,h:114.4}
+let logx = Math.random() * 1000;
+let logy = -200;
+let logVelY = 0;
+const logGravity = 0.7;
 
-let score=0;
-function scoreCounter(){score=score+(1/60);
-  requestAnimationFrame(scoreCounter)}scoreCounter()
+const platform = {x: logx, y: logy, w: 275.2, h: 114.4};
+const platformart = new Image();
+platformart.src = 'art/Log.png';
 
-function logFall(){if(ded==0){
-if(platform.y<655){platform.y=platform.y+3.125}else if(platform.y>=655){platform.x=Math.floor((Math.random()*1070));
-platform.y=0;}
-if(log2.y<655){log2.y=log2.y+3.125}else if(log2.y>=655){log2.x=Math.floor((Math.random()*1070));log2.y=0}
-if(log3.y<655){log3.y=log3.y+3.125}else if(log3.y>=655){log3.x=Math.floor((Math.random()*1070));log3.y=0}
-}else{log3.x=log3.y=log2.y=platform.x=platform.y=log2.x=-500;}requestAnimationFrame(logFall)
-}logFall()
+function isTouching(a, b) {
+
+return (
+a.x < b.x + b.w &&
+a.x + a.w > b.x &&
+a.y < b.y + b.h &&
+a.y + a.h > b.y
+
+);
+
+}
+
+function gameLoop() {
+
+  logVelY += logGravity;
+  logy += logVelY
 
 
+  
 
-function move(){if(keys['KeyR']){froop.y=400;froop.x=600;platform.x=600;platform.y=200;ded=0}
-if(ded==0){
-if(keys['KeyW']){froop.y=froop.y-12}
+  if (logy > canvas.height) {
+
+logy = -platform.h;
+ logVelY = 0;
+ logx = Math.random() * (canvas.width -platform.w);
+
+
+  }
+  platform.x = logx;
+  platform.y = logy;
+
+
+  if (isTouching(froop, platform)) {
+
+  window.location.href="DeathScreen.html";
+return;}
+  requestAnimationFrame(gameLoop);
+}
+gameLoop();
+
+
+function move(){if(keys['KeyW']){froop.y=froop.y-12}
 if(keys['KeyA']){froop.x=froop.x-12}
 if(keys['KeyD']){froop.x=froop.x+12}
-if(froop.x<0){froop.x=0}if(froop.x>1200){froop.x=1200}}
-requestAnimationFrame(move)
-}move()
+if(froop.x<0){froop.x=0}if(froop.x>1200){froop.x=1200}
+requestAnimationFrame(move)}move()
 
-function gravity(){
-  if(froop.y<platform.y+(platform.h/2)&&froop.y>platform.y-(platform.h/2)&&froop.x<platform.x+(platform.w/2)&&
-  froop.x>platform.x-(platform.w/2)){froop.y=platform.y+(platform.h/2);platformart.src='art/LogHit.png'}else
-  {froop.y=froop.y+6.25;platformart.src='art/Log.png'}
 
-  if(froop.y>625){froop.y=625}
-if(froop.y>=625){froop.y=625;ded=1;alert(score);dedsfx.play()}
+
+function gravity(){froop.y=froop.y+6.25;if(froop.y>625){froop.y=625}
+   
+    if (froop.y >= 625) {
+
+froop.y=625;
+
+window.location.href = "DeathScreen.html"
+return;
+    }
+
+
 if(froop.y<0){froop.y=0}
+
     requestAnimationFrame(gravity)}gravity();
 
+const startTime = new Date();
+const timerDisplay = document.getElementById('timerDisplay')
+
+function updateTimer() {
+
+  const currentTime = new Date();
+
+
+  const timeElapsed = currentTime - startTime;
+
+
+
+  const seconds = Math.floor(timeElapsed / 1000) % 60;
+  const minutes = Math.floor(timeElapsed / 1000 * 60) % 60;
+  
+const formattedSeconds = seconds.toString().padStart(2, '0');
+const formattedMinutes = minutes.toString().padStart(2, '0');
+
+
+
+  timerDisplay.textContent = `${formattedMinutes}:${formattedSeconds}`;
+}
+
+setInterval(updateTimer, 1000);
+
+
+
+
+
+
 function images(){ctx.clearRect(0,0,canvas.width,canvas.height);
-  if(platformart.complete){ctx.drawImage(platformart,log3.x,log3.y,log3.w,log3.h)}
-  if(platformart.complete){ctx.drawImage(platformart,log2.x,log2.y,log2.w,log2.h)}
   if(platformart.complete){ctx.drawImage(platformart,platform.x,platform.y,platform.w,platform.h)}
   if(playerart.complete){ctx.drawImage(playerart,froop.x,froop.y,froop.w,froop.h);}
-  if(dedart.complete&&ded==1){ctx.drawImage(dedart,0,0,1370,780)}
+  if(dedart.complete&&ded==1){ctx.drawImage(dedart,0,0,919,919)}
   requestAnimationFrame(images);}images();
 </script>
 </body>
 <br><br><br>
 <audio controls loop src="audio/ost1.wav"></audio>
+</html>
+
