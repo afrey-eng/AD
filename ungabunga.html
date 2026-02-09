@@ -39,9 +39,9 @@ addEventListener('keydown',e=>{keys[e.code]=true;
 addEventListener('keyup',e=>{keys[e.code]=false;});
 
 let logx = Math.random() * 1000;
-let logy = -200;
+let logy = -100;
 let logVelY = 0;
-const logGravity = 0.7;
+const logGravity = 0.5;
 
 const platform = {x: logx, y: logy, w: 275.2, h: 114.4};
 const platformart = new Image();
